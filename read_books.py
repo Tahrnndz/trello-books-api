@@ -7,12 +7,14 @@ from decouple import config
 import openpyxl, csv
 # define filename and file path of source and target files
 # source_file = '/Users/Admin/OneDrive/0000.Journals/0000.DailyJournalArchive.txt'
-target_file = '/Users/Admin/test.xlsx'
+# target_file = '/Users/Admin/test.xlsx'
+target_file = '/Users/Admin/OneDrive/0000.RootProductivity/0000.BooksArchiveDummy.xlsx'
 
 API_TOKEN = config('TOKEN')
 API_KEY = config('KEY')
 DNF_LIST_ID = config('DNF_LIST_ID')
 COMPLETED_LIST_ID = config('COMPLETED_LIST_ID')
+LAST_ROW = 763
 
 url = f"https://api.trello.com/1/lists/{DNF_LIST_ID}/cards?key={API_KEY}&token={API_TOKEN}"
 headers = {
@@ -28,7 +30,7 @@ response = requests.request(
 json_list = json.loads(response.text)
 print()
 for i, value in enumerate(json_list):
-    column = i + 1
+    column = i + 1 + LAST_ROW 
    #  print(i)
    #  print(column)
     name = json_list[i]["name"] 
@@ -47,13 +49,13 @@ for i, value in enumerate(json_list):
     wb = openpyxl.load_workbook(target_file)
     sheet = wb.active
     name_col = "A"+str(column)
-    start_col = "B"+str(column)
-    dnf_col = "C"+str(column)
+    start_col = "E"+str(column)
+    dnf_col = "F"+str(column)
     status_col = "D"+str(column)
     sheet[name_col] = name
     sheet[start_col] = start_date
     sheet[dnf_col] = dnf_date
-    sheet[status_col] = "Did Not Finish"
+    sheet[status_col] = "DNF"
     wb.save(target_file)   
 
 wb.save(target_file)    
@@ -89,8 +91,8 @@ for i, value in enumerate(json_list):
     wb = openpyxl.load_workbook(target_file)
     sheet = wb.active
     name_col = "A"+str(column)
-    start_col = "B"+str(column)
-    completed_col = "C"+str(column)
+    start_col = "E"+str(column)
+    completed_col = "F"+str(column)
     status_col = "D"+str(column)
     sheet[name_col] = name
     sheet[start_col] = start_date
